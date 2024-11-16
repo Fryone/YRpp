@@ -8,7 +8,7 @@ class __declspec(align(4)) NOVTABLE TunnelLocomotionClass : public LocomotionCla
 {
 public:
 	static constexpr uintptr_t ILocoVTable = 0x7F5A24;
-	static constexpr reference<CLSID const, 0x7E9A50u> const ClassGUID {};
+	static constexpr reference<double, 0x7F5B20u> const TunnelMovementSpeed {};
 
 	enum State
 	{

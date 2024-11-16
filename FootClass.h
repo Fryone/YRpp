@@ -25,6 +25,9 @@ public:
 	//AbstractClass
 	//ObjectClass
 	//MissionClass
+
+	virtual int Mission_AreaGuard() override { JMP_THIS(0x4D6AA0); }
+
 	//TechnoClass
 	virtual void Destroyed(ObjectClass *Killer) RX;
 	virtual bool ForceCreate(CoordStruct& coord, DWORD dwUnk = 0) R0;
@@ -149,10 +152,10 @@ public:
 	DWORD           unknown_530;
 	DWORD           unknown_534;
 	int				WalkedFramesSoFar;
-	bool            unknown_bool_53C;
-	DWORD           unknown_540;
+	bool            IsMoveSoundPlaying;
+	int             MoveSoundDelay;
 
-	DECLARE_PROPERTY(AudioController, Audio7);
+	DECLARE_PROPERTY(AudioController, MoveSoundAudioController);
 
 	CellStruct      CurrentMapCoords;
 	CellStruct      LastMapCoords; // ::UpdatePosition uses this to remove threat from last occupied cell, etc

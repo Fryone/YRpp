@@ -16,6 +16,9 @@ class GroundType
 public:
 	static constexpr reference<GroundType, 0x89EA40u, 12u> const Array {};
 
+	static LandType __fastcall GetLandTypeFromName(const char* name)
+		{ JMP_STD(0x48DF80); }
+
 	//Properties
 	float Cost[8];  // Terrain speed multipliers.
 	bool Buildable; // Can build on this terrain?
@@ -151,6 +154,8 @@ public:
 class LogicClass : public LayerClass
 {
 public:
+	static constexpr reference<LogicClass, 0x87F778u> const Instance {};
+
 	virtual bool AddObject(ObjectClass* pObject, bool sorted) override
 		{ JMP_THIS(0x55BAA0); }
 
@@ -173,8 +178,6 @@ public:
 	static constexpr reference<CellClass, 0xABDC50u> const InvalidCell{};
 
 	static const int MaxCells = 0x40000;
-
-	static constexpr reference<LogicClass, 0x87F778u> const Logics{};
 
 	// this actually points to 5 vectors, one for each layer
 	static constexpr reference<LayerClass, 0x8A0360u, 5u> const ObjectsInLayers{};

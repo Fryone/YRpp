@@ -43,6 +43,8 @@ public:
 	// ...and so on
 	// FIXME other virtual function explicit addresses
 
+	virtual FireError GetFireError(AbstractClass* pTarget, int nWeaponIndex, bool ignoreRange) const override JMP_THIS(0x740FD0);
+
 	//UnitClass
 	// main drawing functions - Draw() calles one of these, they call parent's Draw_A_smth
 	virtual void DrawAsVXL(Point2D Coords, RectangleStruct BoundingRect, int Brightness, int Tint)
@@ -108,8 +110,8 @@ public:
 	int unknown_int_6C0;
 	UnitTypeClass* Type;
 	UnitClass* FollowerCar; // groovy - link defined in the map's [Units] section, looked up on startup
-	int FlagHouseIndex; //Carrying the flag of this House
-	bool HasFollowerCar; // yes, this vehicle has a another vehicle (a train's locomotive towing the cars)
+	int FlagHouseIndex; // Carrying the flag of this House
+	bool IsFollowerCar; // This vehicle is another vehicle's FollowerCar (such as a train car following train).
 	bool Unloading;
 	bool IsHarvesting;
 	bool TerrainPalette;

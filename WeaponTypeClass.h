@@ -20,6 +20,9 @@ public:
 	//Array
 	ABSTRACTTYPE_ARRAY(WeaponTypeClass, 0x887568u);
 
+	static WeaponTypeClass* __fastcall FindOrAllocate(const char* id)
+	{ JMP_STD(0x772FA0); }
+
 	//IPersist
 	virtual HRESULT __stdcall GetClassID(CLSID* pClassID) R0;
 
@@ -38,6 +41,9 @@ public:
 
 	void CalculateSpeed()
 		{ JMP_THIS(0x7729F0); }
+
+	ThreatType AllowedThreats()
+		{ JMP_THIS(0x772A90); }
 
 	//Constructor
 	WeaponTypeClass(const char* pID = nullptr)
