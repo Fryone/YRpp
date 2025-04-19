@@ -184,7 +184,7 @@ class NOVTABLE TechnoClass : public RadioClass
 public:
 	static const auto AbsDerivateID = AbstractFlags::Techno;
 
-	static constexpr constant_ptr<DynamicVectorClass<TechnoClass*>, 0xA8EC78u> const Array {};
+	DEFINE_REFERENCE(DynamicVectorClass<TechnoClass*>, Array, 0xA8EC78u)
 
 	//IPersistStream
 	virtual HRESULT __stdcall Load(IStream* pStm) R0;
@@ -471,6 +471,10 @@ public:
 	HouseClass* GetOriginalOwner() const
 	{ JMP_THIS(0x70F820); }
 
+	// returns the house that controls this techno (replaces the ID with player's ID if needed)
+	int GetControllingHouse() const
+	{ JMP_THIS(0x6339B0); }
+
 	void FireDeathWeapon(int additionalDamage)
 	{ JMP_THIS(0x70D690); }
 
@@ -497,6 +501,9 @@ public:
 
 	WeaponStruct* GetPrimaryWeapon() const
 	{ JMP_THIS(0x70E1A0); }
+
+	bool TryNextPlanningTokenNode()
+	{ JMP_THIS(0x6385C0); }
 
 	int GetIonCannonValue(AIDifficulty difficulty) const;
 
@@ -688,7 +695,7 @@ public:
 	bool             IsSinking;
 	bool             WasSinkingAlready; // if(IsSinking && !WasSinkingAlready) { play SinkingSound; WasSinkingAlready = 1; }
 	bool             unknown_bool_3CF;
-	bool             unknown_bool_3D0;
+	bool             IsUseless; // Units that are considered to have fulfilled their purpose and useless. Harvesters that cannot do anything without player input are considered this. AI will sell these units on Service Depots.
 	bool             HasBeenAttacked; // ReceiveDamage when not HouseClass_IsAlly
 	bool             Cloakable;
 	bool             IsPrimaryFactory; // doubleclicking a warfac/barracks sets it as primary

@@ -167,10 +167,10 @@ public:
 	enum {PlayerAtA = 4475, PlayerAtB, PlayerAtC, PlayerAtD, PlayerAtE, PlayerAtF, PlayerAtG, PlayerAtH};
 
 	//Static
-	static constexpr constant_ptr<DynamicVectorClass<HouseClass*>, 0xA80228u> const Array{};
+	DEFINE_REFERENCE(DynamicVectorClass<HouseClass*>, Array, 0xA80228u)
 
-	static constexpr reference<HouseClass*, 0xA83D4Cu> const CurrentPlayer{}; // House of player at this computer.
-	static constexpr reference<HouseClass*, 0xAC1198u> const Observer{};;     // House of player that is observer.
+	DEFINE_REFERENCE(HouseClass*, CurrentPlayer, 0xA83D4Cu) // House of player at this computer.
+	DEFINE_REFERENCE(HouseClass*, Observer, 0xAC1198u);     // House of player that is observer.
 
 	//IConnectionPointContainer
 	virtual HRESULT __stdcall EnumConnectionPoints(IEnumConnectionPoints** ppEnum) R0;
@@ -215,6 +215,15 @@ public:
 	virtual AbstractType WhatAmI() const RT(AbstractType);
 	virtual int	Size() const R0;
 
+	bool MakeObserver() const
+	{
+		if (HouseClass::CurrentPlayer != this)
+			return false;
+
+		HouseClass::Observer = const_cast<HouseClass*>(this);
+		return true;
+	}
+
 	bool IsAlliedWith(int idxHouse) const
 		//{ JMP_THIS(0x4F9A10); }
 	{
@@ -242,6 +251,12 @@ public:
 		//	{ JMP_THIS(0x4F9AF0); }
 	{
 		return this->IsAlliedWith(generic_cast<ObjectClass const*>(pAbstract));
+	}
+
+	inline bool IsMutualAlly(HouseClass const* pHouse) const
+	{
+		return pHouse == this
+			|| (this->Allies.Contains(pHouse->ArrayIndex) && pHouse->Allies.Contains(this->ArrayIndex));
 	}
 
 	void MakeAlly(int iHouse, bool bAnnounce)
@@ -404,7 +419,7 @@ public:
 
 	// gets the first house of a side with this name
 	static HouseClass* FindBySideIndex(int index) {
-		for(auto pHouse : *Array) {
+		for(auto pHouse : Array) {
 			if(pHouse->Type->SideIndex == index) {
 				return pHouse;
 			}
@@ -426,11 +441,13 @@ public:
 	static void __fastcall LoadFromINIList(CCINIClass *pINI)
 		{ JMP_STD(0x5009B0); }
 
-	int GetSpawnPosition() {
-		ScenarioClass* pScenario = ScenarioClass::Instance;
+	int GetSpawnPosition() const {
+		const int currentIndex = this->ArrayIndex;
+		const int* houseIndices = ScenarioClass::Instance->HouseIndices;
+
 		for (int i = 0; i < 8; i++)
 		{
-			if (HouseClass::Array->GetItemOrDefault(pScenario->HouseIndices[i], nullptr) == this)
+			if (houseIndices[i] == currentIndex)
 				return i;
 		}
 		return -1;
@@ -465,7 +482,7 @@ public:
 	// Whether any human player controls this house.
 	bool IsControlledByHuman() const { // { JMP_THIS(0x50B730); }
 		bool result = this->IsHumanPlayer;
-		if(SessionClass::Instance->GameMode == GameMode::Campaign) {
+		if(SessionClass::Instance.GameMode == GameMode::Campaign) {
 			result = result || this->IsInPlayerControl;
 		}
 		return result;
@@ -473,7 +490,7 @@ public:
 
 	// Whether the human player on this computer can control this house.
 	bool IsControlledByCurrentPlayer() const { // { JMP_THIS(0x50B6F0); }
-		if(SessionClass::Instance->GameMode != GameMode::Campaign) {
+		if(SessionClass::Instance.GameMode != GameMode::Campaign) {
 			return this->IsCurrentPlayer();
 		}
 		return this->IsHumanPlayer || this->IsInPlayerControl;
@@ -675,6 +692,9 @@ public:
 	void SetPrimaryFactory(FactoryClass* pFactory, AbstractType absID, bool naval, BuildCat buildCat)
 		{ JMP_THIS(0x500850); }
 
+	void AssignHandicap(int difficulty)
+		{ JMP_THIS(0x4F6EC0); }
+
 	const CellStruct& GetBaseCenter() const {
 		if(this->BaseCenter != CellStruct::Empty) {
 			return this->BaseCenter;
@@ -709,6 +729,11 @@ public:
 	// Whether this house is equal to Observer
 	bool IsObserver() const {
 		return this == Observer;
+	}
+
+	bool inline IsInitiallyObserver() const
+	{
+		return this->IsHumanPlayer && (this->GetSpawnPosition() == -1);
 	}
 
 	// Whether CurrentPlayer is equal to Observer

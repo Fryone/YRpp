@@ -16,7 +16,7 @@ class NOVTABLE FootClass : public TechnoClass
 public:
 	static const auto AbsDerivateID = AbstractFlags::Foot;
 
-	static constexpr constant_ptr<DynamicVectorClass<FootClass*>, 0x8B3DC0u> const Array{};
+	DEFINE_REFERENCE(DynamicVectorClass<FootClass*>, Array, 0x8B3DC0u)
 
 	//IPersistStream
 	//Destructor
@@ -73,7 +73,7 @@ public:
 	virtual void SetSpeedPercentage(double percentage) RX;
 	virtual void vt_entry_548() RX;
 	virtual void vt_entry_54C() RX;
-	virtual bool vt_entry_550(DWORD dwUnk) R0;
+	virtual bool IsLandZoneClear(AbstractClass* pDestination) R0;
 
 	bool CanBeRecruited(HouseClass *ByWhom) const
 		{ JMP_THIS(0x4DA230); }
@@ -119,8 +119,12 @@ public:
 	void EnterAsPassenger(FootClass* pPassenger)
 		{ JMP_THIS(0x4DE630); }
 
+	// Adds to the NavQueue
+	void QueueNavigationList(AbstractClass * target)
+	{ JMP_THIS(0x4DA0E0); }
+
 	// Clears NavQueue
-	void ClearNavQueue()
+	void ClearNavigationList()
 		{ JMP_THIS(0x4DA1C0); }
 
 	// searches cell, sets destination, and returns whether unit is on that cell
