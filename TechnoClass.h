@@ -324,7 +324,7 @@ public:
 	virtual void Cloak(bool bPlaySound) RX;
 	virtual int GetFlashingIntensity(int currentIntensity) const R0;
 	virtual void UpdateRefinerySmokeSystems() RX;
-	virtual DWORD DisguiseAs(AbstractClass* pTarget) R0;
+	virtual DWORD DisguiseAs(AbstractClass* pTarget) JMP_THIS(0x70E280);
 	virtual void ClearDisguise() RX;
 	virtual bool IsItTimeForIdleActionYet() const R0;
 	virtual bool UpdateIdleAction() R0;
@@ -437,6 +437,9 @@ public:
 	// called when the source unit dies - passengers are about to get kicked out, this basically calls ->ExitedOpenTransport on each passenger
 	void MarkPassengersAsExited()
 	{ JMP_THIS(0x7104C0); }
+
+	bool IsAbsorbAllowed() const
+	{ JMP_THIS(0x4598A0); }
 
 	// for gattlings
 	void SetCurrentWeaponStage(int idx)
@@ -552,6 +555,9 @@ public:
 
 	CellStruct* NearbyLocation(CellStruct* pCell, AbstractClass* pDest)
 		{ JMP_THIS(0x703590); }
+
+	bool CanPassiveAcquireTargets()
+		{ JMP_THIS(0x7091D0); }
 
 	//Constructor
 	TechnoClass(HouseClass* pOwner) noexcept
